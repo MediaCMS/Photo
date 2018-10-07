@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>Web User Interface</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script>
+            function addInput(){
+                var input=document.createElement('input');
+                input.setAttribute('type','text');
+                input.setAttribute('name','images[]');
+                input.setAttribute('placeholder','Image relative path');
+                input.className='image';
+                var formDelete=document.getElementById('form-delete');
+                var buttonAddInput=document.getElementById('button-add-input');
+                formDelete.insertBefore(input,buttonAddInput);
+            }
+        </script>
+        <style>
+            h1 {text-align:center;margin:0 0 10px;}
+            div.forms {width:780px;margin:0 auto;}
+            div.form {width:100%;border:solid 1px #ccc;vertical-align:top;padding:10px 10px;margin:10px 0;display:inline-block;}
+            h2 {text-align:center;margin:10px 0;}
+            input {font-size:14px;margin:10px 5px;}
+            input.upload {width:370px;}
+            input.image {width:370px;}
+            input.title {width:150px;}
+            input.subtitle {width:180px;}
+            input.key {width:260px;}
+        </style>
+    </head>
+    <body>
+        <div class="forms">
+            <h1>Web User Interface</h1>
+            <div class="form upload">
+                <h2>Upload images</h2>
+                <form method="POST" action="/?action=upload&debug=2" enctype="multipart/form-data">
+                    <input type="file" name="images[]" multiple="multiple" class="upload" />
+                    <input type="text" name="key" placeholder="Key" class="key" />
+                    <input type="submit" name="Submit" />
+                </form>
+            </div>
+            <div class="form create">
+                <h2>Create thumbnail</h2>
+                <form method="POST" action="/?action=create&debug=2">
+                    <input type="text" name="image" placeholder="Image relative path" class="image" />
+                    <input type="text" name="key" placeholder="Key" class="key" />
+                    <input type="text" name="title" placeholder="Title" class="title" />
+                    <input type="text" name="subtitle" placeholder="Subtitle" class="subtitle" />
+                    <input type="submit" name="Submit" />
+                </form>
+            </div>
+            <div class="form delete">
+                <h2>Delete images</h2>
+                <form method="POST" action="/?action=delete&debug=2" id="form-delete">
+                    <input type="text" name="images[]" placeholder="Image relative path" class="image" />
+                    <input type="button" value="+" onClick="addInput();" id="button-add-input" />
+                    <input type="text" name="key" placeholder="Key" class="key" />
+                    <input type="submit" name="Submit" />
+                </form>
+            </div>
+            <div class="form import">
+                <h2>Import images</h2>
+                <form method="POST" action="/?action=import&debug=2">
+                    <input type="text" name="key" placeholder="Key" class="key" />
+                    <input type="submit" name="Submit" />
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

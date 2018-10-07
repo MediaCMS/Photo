@@ -1,1 +1,4 @@
-/.idea
+.idea
+private/exceptions.log
+public/storage
+.gitignore
