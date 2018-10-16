@@ -1,4 +1,4 @@
-# MediaCMS / Photo
+# MediaCMS Photo
 
 ### Фото сайт
 *Експериментальний проект*
