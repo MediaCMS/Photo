@@ -3,12 +3,12 @@
  * Клас для роботи з логом
  *
  * @author      Артем Висоцький <a.vysotsky@gmail.com>
- * @package     Varianty\Photo\Log
- * @link        https://варіанти.укр
- * @copyright   Всі права застережено (c) 2018 Варіанти
+ * @package     MediaCMS\Photo
+ * @link        https://медіа.укр
+ * @copyright   GNU General Public License v3
  */
 
-namespace Varianty\Photo;
+namespace MediaCMS\Photo;
 
 class Log {
 
@@ -16,11 +16,14 @@ class Log {
      * Додає запис в файл лога
      *
      * @param   string $message Повідомлення, що повинно записатись в лог-файл
+     * @param   integer|null $code Код винятка
      * @return  boolean Результат виконання операції
      */
-    public static function append($message) {
+    public static function append($message, $code = null): bool {
 
-        $file = _PATH_PRIVATE . '/exceptions.log';
+        if (isset($code)) $message .= ' (' . $code . ')';
+
+        $file = PATH_PRIVATE . '/exceptions.log';
 
         $string['time'] = date('Y-m-d H:i:s');
 
@@ -32,7 +35,7 @@ class Log {
 
             $string['agent'] = '"' . $_SERVER['HTTP_USER_AGENT'] . '"';
 
-        $string = implode('  ', $string) . "\n";
+        $string = implode('  ', $string) . "\r\n";
 
         $result = file_put_contents($file, $string, FILE_APPEND | LOCK_EX);
 

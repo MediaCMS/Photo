@@ -3,12 +3,12 @@
  * Вивід
  *
  * @author      Артем Висоцький <a.vysotsky@gmail.com>
- * @package     Varianty\Photo\Response
- * @link        https://варіанти.укр
- * @copyright   Всі права застережено (c) 2018 Варіанти
+ * @package     MediaCMS\Photo
+ * @link        https://медіа.укр
+ * @copyright   GNU General Public License v3
  */
 
-namespace Varianty\Photo;
+namespace MediaCMS\Photo;
 
 class Response {
 
@@ -23,25 +23,25 @@ class Response {
      */
     public function setImage($image) {
 
-        $this->data['images'][] = $image;
+        $this->data['image'] = $image;
     }
 
     /**
-     * Повертає відносні адреси завантажених файлів зображень
+     * Повертає відносну адресу завантаженого файла зображення
      *
-     * @return string Відносний адреси завантажених файлів зображень
+     * @return string Адреса зображення
      */
-    public function getImages() {
+    public function getImage() {
 
-        return (isset($this->data['images'])) ? $this->data['images'] : null;
+        return (isset($this->data['image'])) ? $this->data['image'] : null;
     }
 
     /**
-     * Видаляє адреси завантажених зображень
+     * Видаляє адресу завантаженого зображення
      */
-    public function unsetImages() {
+    public function unsetImage() {
 
-        unset($this->data['images']);
+        unset($this->data['image']);
     }
 
     /**

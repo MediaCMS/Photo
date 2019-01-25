@@ -2,37 +2,59 @@
 /**
  * Головний файл з обмеженим доступом
  *
- * /?action=create       $_POST=array('image', 'title', 'subtitle', 'key')
- * /?action=upload       $_POST=array('title', 'subtitle', 'key');  $_FILES['image']
+ * /?action=upload       $_POST=array('key');  $_FILES['image']
  * /?action=delete       $_POST=array('image', 'key')
- * /?action=import       $_POST=array('key')
  *
- * image = '/1c/8d/c3/1c8dc3d168a18a47e14231db4e861b4a.0320.jpg'
+ * image = '/1/c/8/1c8dc3d168a18a47e14231db4e861b4a/0320.jpg'
  *
  * @author      Артем Висоцький <a.vysotsky@gmail.com>
- * @package     Varianty\Photo
- * @link        https://варіанти.укр
- * @copyright   Всі права застережено (c) 2018 Варіанти
+ * @package     MediaCMS\Photo
+ * @link        https://медіа.укр
+ * @copyright   GNU General Public License v3
  */
 
-use \Varianty\Photo\Controller;
-use \Varianty\Photo\Response;
-use \Varianty\Photo\Exception;
+use MediaCMS\Photo\Controller;
+use MediaCMS\Photo\Response;
+use MediaCMS\Photo\Exception;
 
-/** Ключ доступу */
-define('_KEY', '1c8dc3d168a18a47e14231db4e861b4a');
+spl_autoload_register('autoload');
+
+set_error_handler('exceptionErrorHandler');
+
+setlocale(LC_ALL, 'uk_UA.utf8');
+
+mb_internal_encoding('UTF-8');
+
+require_once(PATH_PRIVATE . '/settings.php');
 
 $response = new Response();
 
 try {
 
-    if (count($_GET) == 0) throw new Exception('Access denied', 100);
+    define('DEBUG', $_GET['debug'] ?? 0);
 
-    if (!isset($_POST['key'])) throw new Exception('Missing access key', 101);
+    if (isset($_GET['debug'])) {
 
-    if ($_POST['key'] != _KEY) throw new Exception('Unknown access key', 102);
+        if (!preg_match('/^[012]$/', $_GET['debug']))
 
-    if (!isset($_GET['action'])) throw new Exception('Missing action', 110);
+            throw new Exception('Unknown debug value', 104);
+    }
+
+    if (count($_GET) == 0)
+
+        throw new Exception('Access denied', 100);
+
+    if (!isset($_POST['key']))
+
+        throw new Exception('Missing access key', 101);
+
+    if ($_POST['key'] != KEY)
+
+        throw new Exception('Unknown access key', 102);
+
+    if (!isset($_GET['action']))
+
+        throw new Exception('Missing action', 103);
 
     $controller = new Controller($response);
 
@@ -51,35 +73,35 @@ try {
 
     $message = $exception->getMessage();
 
-    if (_DEBUG)
+    if (DEBUG)
 
         $message .= sprintf(' (%s, %s)', $exception->getFile(), $exception->getLine());
 
     $response->setError($message, $exception->getCode());
 
-    if (_DEBUG)
+    if (DEBUG)
 
         foreach($exception->getTrace() as $trace) $response->setTrace($trace);
 
     header('HTTP/1.x 404 Not Found');
 }
 
-if (_DEBUG) {
+if (DEBUG) {
 
     $response->setDebug('time',
 
-        sprintf('%01.3f', (microtime(true) - _TIME) * 1000) . ' ms');
+        sprintf('%01.3f', (microtime(true) - TIME) * 1000) . ' ms');
 
     $response->setDebug('memory',
 
-        sprintf('%01.3f', ((memory_get_usage() - _MEMORY) / 1024)) . ' kB');
+        sprintf('%01.3f', ((memory_get_usage() - MEMORY) / 1024)) . ' kB');
 
     $response->setDebug('memoryPeak',
 
         sprintf('%01.3f', (memory_get_peak_usage() / 1024)) . ' kB');
 }
 
-if (_DEBUG == 2) {
+if (DEBUG == 2) {
 
     echo '<pre>' . print_r($response->get(), true) . '</pre>';
 
@@ -91,3 +113,44 @@ if (_DEBUG == 2) {
 }
 
 
+
+/**
+ * Створює автозавантажувач об’єктів
+ *
+ * @param string $object Назва об’єкту
+ */
+function autoload($object) {
+
+    $class = str_replace('MediaCMS\\Photo\\', '/', $object);
+
+    require_once(PATH_PRIVATE . "/$class.php");
+}
+
+/**
+ * Перетворює помилки у винятки
+ *
+ * @param string $number Номер помилки
+ * @param string $string Опис помилки
+ * @param string $file Файл, в якому виникла помилка
+ * @param string $line Рядок файлу, в якому виникла помилка
+ * @throws \ErrorException
+ */
+function exceptionErrorHandler($number, $string, $file, $line) {
+
+    throw new \ErrorException($string, 0, $number, $file, $line);
+}
+
+/**
+ * Викликає виняток у випадку фатальної помилки
+ *
+ * @throws \ErrorException Any error
+ */
+function fatalErrorShutdownHandler() {
+
+    $error = error_get_last();
+
+    if ($error['type'] === E_ERROR) {
+
+        exceptionErrorHandler(E_ERROR, $error['message'], $error['file'], $error['line']);
+    }
+}

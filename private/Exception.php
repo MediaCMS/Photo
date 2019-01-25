@@ -3,14 +3,12 @@
  * Клас для роботи з логом
  *
  * @author      Артем Висоцький <a.vysotsky@gmail.com>
- * @package     Varianty\Photo\Exception
- * @link        https://варіанти.укр
- * @copyright   Всі права застережено (c) 2018 Варіанти
+ * @package     MediaCMS\Photo
+ * @link        https://медіа.укр
+ * @copyright   GNU General Public License v3
  */
 
-namespace Varianty\Photo;
-
-use \Varianty\Photo\Log;
+namespace MediaCMS\Photo;
 
 class Exception extends \Exception {
 
@@ -18,11 +16,12 @@ class Exception extends \Exception {
      * Конструктор класу
      *
      * @param string $message Опис винятка
-     * @param string|array $params Додаткові параметри опису
+     * @param integer|null $code Код винятка
+     * @param Exception|null $preview Попередній виняток
      */
     public function __construct($message, $code = null, $preview = null) {
 
-        Log::append($message);
+        Log::append($message, $code);
 
         parent::__construct($message, $code, $preview);
     }

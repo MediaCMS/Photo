@@ -1,0 +1,38 @@
+<html lang="en">
+    <head>
+        <title>Тестування сервера зображень</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            html {margin-top:20px;}
+            h1 {text-align:center;}
+            div.forms {width:480px;margin:0 auto;}
+            div.form {width:100%;border:solid 1px #ccc; text-align: center; vertical-align:top;padding:10px 10px;margin:10px 0;display:inline-block;}
+            h2 {text-align:center;margin:10px 0;}
+            input {font-size:14px;padding: 5px; margin:5px 5px;}
+            input.field {width:90%;}
+            input.image {}
+            input.key {}
+        </style>
+    </head>
+    <body>
+        <div class="forms">
+            <h1>Тестування сервера зображень</h1>
+            <div class="form upload">
+                <h2>Завантажити зображення</h2>
+                <form method="POST" action="/?action=upload&debug=2" enctype="multipart/form-data">
+                    <p><input type="file" name="image" class="field upload" /></p>
+                    <p><input type="text" name="key" placeholder="Ключ" class="field key" /></p>
+                    <p><input type="submit" name="submit" value="Відправити" /></p>
+                </form>
+            </div>
+            <div class="form delete">
+                <h2>Видалити зображення</h2>
+                <form method="POST" action="/?action=delete&debug=2" id="form-delete">
+                    <p><input type="text" name="image" placeholder="Відносна адреса файла зображення" class="field image" /></p>
+                    <p><input type="text" name="key" placeholder="Ключ" class="field key" /></p>
+                    <p><input type="submit" name="submit" value="Відправити" /></p>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
