@@ -194,6 +194,8 @@ class Image {
             throw new Exception(sprintf($exception, $width, $widthMin), 140);
         }
 
+        $uri = null;
+
         foreach($this->widths as $width) {
 
             if ($width > $size[0]) break;
@@ -248,43 +250,37 @@ class Image {
      */
     public function delete($uri): void {
 
-        $pattern = '\/[a-f0-9]{2}\/[a-f0-9]{2}\/[a-f0-9]{2}';
+        $pattern = "/^(\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]{32})\/\d{4}\.jpg$/";
 
-        $pattern = "/(($pattern)\/([a-f0-9]{32}))\.\d{4}\.jpg/";
+        if (!preg_match($pattern, $uri, $matches))
 
-        if (!preg_match($pattern, $uri, $matches)) {
+            throw new Exception(
 
-            throw new Exception(sprintf("Bad image path '%s'", $uri), 130);
-        }
+                sprintf("Погана адреса файла зображення '%s'", $uri), 130
+            );
 
-        $hash = $matches[3];
+        $directory = $this->storage . '/' . $matches[1];
 
-        $directory = $matches[2];
+        if (!file_exists($directory) || !is_dir($directory))
 
-        $uri = $directory . '/' . $hash . '.original.jpg';
+            throw new Exception(
 
-        $file = $this->storage . $uri;
-
-        if (!file_exists($file)) {
-
-            throw new Exception(sprintf("Missing image file '%s'", $uri), 131);
-        }
-
-        $directory = $this->storage . $directory;
+                sprintf("Відсутній файл зображення '%s'", $uri), 131
+            );
 
         $images = array_slice(scandir($directory), 2);
 
         foreach($images as $image) {
 
-            if (substr($image, 0, 32) != $hash) continue;
+            if (!unlink($directory . '/' . $image))
 
-            if (!unlink($directory . '/' . $image)) {
+                throw new Exception(
 
-                throw new Exception(sprintf("Delete image error '%s'", $image), 140);
-            }
+                    sprintf("Помилка при видаленні файла зображення '%s'", $image), 132
+                );
         }
 
-        for($i = 1; $i <= 3; $i ++) {
+        for($i = 1; $i <= 4; $i ++) {
 
             if (count(scandir($directory)) == 2) rmdir($directory);
 

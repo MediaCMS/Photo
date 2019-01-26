@@ -8,11 +8,11 @@
  * @copyright   GNU General Public License v3
  */
 
-/** Ключ доступу */
-define('KEY', '');
-
 /** Шлях до файлів зображень */
 define('PATH_STORAGE', PATH_PUBLIC . '');
 
 /** Адреса дозволеного сайта */
 define('ORIGIN', '');
+
+/** Ключ доступу */
+define('KEY', '');

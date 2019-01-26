@@ -67,7 +67,7 @@ class Controller {
      */
     public function delete($image = null) {
 
-        if (isset($_POST['image'])) $image = $_POST['image'];
+        if (!isset($image) && isset($_POST['image'])) $image = $_POST['image'];
 
         if (!isset($image))
             
