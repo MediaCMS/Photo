@@ -87,20 +87,20 @@ class Image {
 
         $directory .= '/' . $hash;
 
-        $path = $this->storage . '/' . $directory;
+        $path = $this->storage . $directory;
+
+        $uri = $directory . '/' . $this->original;
 
         if (file_exists($path) && is_dir($path)) {
 
             $exception = "Файл вже існує ('%s', '%s')";
 
-            throw new Exception(sprintf($exception, $image['name'], $path), 139);
+            throw new Exception(sprintf($exception, $image['name'], $uri), 139);
         }
 
         mkdir($path);
 
         chmod($path, 0775);
-
-        $uri = $directory . '/' . $this->original;
 
         $file = $this->storage . $uri;
 
@@ -248,7 +248,7 @@ class Image {
      *
      * @param string $uri Відносна адреса файлу зображення
      */
-    public function delete($uri): void {
+    public function remove($uri): void {
 
         $pattern = "/^(\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]\/[0-9a-f]{32})\/\d{4}\.jpg$/";
 

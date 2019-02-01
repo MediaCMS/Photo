@@ -46,15 +46,15 @@ class Controller {
 
             $uri = $this->image->upload($_FILES['image']);
 
-            $this->response->setImage($uri);
+            $this->response->setURI($uri);
 
         } catch (\Exception $exception) {
 
-            $image = $this->response->getImage();
+            $uri = $this->response->getURI();
 
-            if (isset($image)) $this->delete($image);
+            if (isset($uri)) $this->remove($uri);
 
-            $this->response->unsetImage();
+            $this->response->unsetURI();
 
             throw $exception;
         }
@@ -63,16 +63,16 @@ class Controller {
     /**
      * Видаляє файл зображення з сервера
      *
-     * @param string $image Відносна адреса зображення
+     * @param string $uri Відносна адреса зображення
      */
-    public function delete($image = null) {
+    public function remove($uri = null) {
 
-        if (!isset($image) && isset($_POST['image'])) $image = $_POST['image'];
+        if (!isset($uri) && isset($_POST['uri'])) $uri = $_POST['uri'];
 
-        if (!isset($image))
+        if (!isset($uri))
             
             throw new Exception('Відсутня адреса файлу зображення', 121);
 
-        $this->image->delete($image);
+        $this->image->remove($uri);
     }
 }

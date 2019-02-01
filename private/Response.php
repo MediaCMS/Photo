@@ -17,31 +17,31 @@ class Response {
 
 
     /**
-     * Додає адресу зображення
+     * Додає адресу файла зображення
      *
-     * @param string $image Назва файлу
+     * @param string $uri Адреса файла
      */
-    public function setImage($image) {
+    public function setURI($uri) {
 
-        $this->data['image'] = $image;
+        $this->data['uri'] = $uri;
     }
 
     /**
      * Повертає відносну адресу завантаженого файла зображення
      *
-     * @return string Адреса зображення
+     * @return string|null Адреса зображення
      */
-    public function getImage() {
+    public function getURI() {
 
-        return (isset($this->data['image'])) ? $this->data['image'] : null;
+        return (isset($this->data['uri'])) ? $this->data['uri'] : null;
     }
 
     /**
      * Видаляє адресу завантаженого зображення
      */
-    public function unsetImage() {
+    public function unsetURI() {
 
-        unset($this->data['image']);
+        unset($this->data['uri']);
     }
 
     /**

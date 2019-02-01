@@ -12,9 +12,13 @@ define('PATH_PRIVATE', PATH_ROOT .'/private');
 require_once(PATH_PRIVATE . '/settings.php');
 
 header('Content-Type: text/plain;charset=UTF-8');
+
 header('Access-Control-Allow-Origin: ' . ORIGIN);
+
 header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
+
 //header('Access-Control-Allow-Credentials: true');
 
 if (isset($_SERVER['REQUEST_METHOD'])
@@ -24,7 +28,9 @@ if (isset($_SERVER['REQUEST_METHOD'])
 try {
 
     reset ($_FILES);
+
     $temp = current($_FILES);
+
     // Notify editor that the upload failed
     if (!is_uploaded_file($temp['tmp_name']))
 

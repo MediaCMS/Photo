@@ -2,8 +2,8 @@
 /**
  * Головний файл з обмеженим доступом
  *
- * /?action=upload       $_POST=array('key');  $_FILES['image']
- * /?action=delete       $_POST=array('image', 'key')
+ * /?action=upload       $_FILES['image']
+ * /?action=delete       $_POST=array('uri',)
  *
  * image = '/1/c/8/1c8dc3d168a18a47e14231db4e861b4a/0320.jpg'
  *
@@ -27,34 +27,60 @@ mb_internal_encoding('UTF-8');
 
 require_once(PATH_PRIVATE . '/settings.php');
 
-$response = new Response();
+//header('Content-Type: text/plain; charset=UTF-8');
 
+header('Access-Control-Allow-Origin: ' . ORIGIN);
+
+header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+
+header('Access-Control-Allow-Headers: Origin, Content-Type, Content-User, X-Auth-Token');
+
+//header('Access-Control-Allow-Credentials: true');
+
+if (isset($_SERVER['REQUEST_METHOD'])
+
+    && ($_SERVER['REQUEST_METHOD'] == 'OPTIONS')) exit();
+
+if (isset($_SERVER['HTTP_ORIGIN']) && ($_SERVER['HTTP_ORIGIN'] == ORIGIN)) {
+
+    header('Access-Control-Allow-Origin: ' . ORIGIN);
+
+} else {
+
+    header('HTTP/1.1 403 Origin Denied');
+    
+    exit('HTTP/1.1 403 Origin Denied');
+}
+
+$response = new Response();
+//$response->setDebug('$_GET', $_GET);
+//$response->setDebug('$_POST', $_POST);
 try {
 
     define('DEBUG', $_GET['debug'] ?? 0);
+
+    if (count($_GET) == 0)
+
+        throw new Exception('Доступ заборонено', 100);
+/*
+    if (!isset($_POST['key']))
+
+        throw new Exception('Відсутній ключ', 101);
+
+    if ($_POST['key'] != KEY)
+
+        throw new Exception('Невідомий ключ', 102);
+*/
+    if (!isset($_GET['action']))
+
+        throw new Exception('Відсутня дія', 103);
 
     if (isset($_GET['debug'])) {
 
         if (!preg_match('/^[012]$/', $_GET['debug']))
 
-            throw new Exception('Unknown debug value', 104);
+            throw new Exception('Невідомий код відлагодження', 104);
     }
-
-    if (count($_GET) == 0)
-
-        throw new Exception('Access denied', 100);
-
-    if (!isset($_POST['key']))
-
-        throw new Exception('Missing access key', 101);
-
-    if ($_POST['key'] != KEY)
-
-        throw new Exception('Unknown access key', 102);
-
-    if (!isset($_GET['action']))
-
-        throw new Exception('Missing action', 103);
 
     $controller = new Controller($response);
 
@@ -62,7 +88,7 @@ try {
 
     if (!method_exists($controller, $action)) {
 
-         throw new Exception(sprintf("Unknown action '%s'", $_GET['action']), 111);
+         throw new Exception(sprintf("Невідома дія '%s'", $_GET['action']), 111);
     }
 
     call_user_func(array($controller, $action));
@@ -83,7 +109,7 @@ try {
 
         foreach($exception->getTrace() as $trace) $response->setTrace($trace);
 
-    header('HTTP/1.x 404 Not Found');
+    //header('HTTP/1.x 404 Not Found');
 }
 
 if (DEBUG) {
@@ -103,13 +129,15 @@ if (DEBUG) {
 
 if (DEBUG == 2) {
 
+    header('Content-Type: text/html; charset=UTF-8');
+
     echo '<pre>' . print_r($response->get(), true) . '</pre>';
 
 } else {
 
     header('Content-Type: application/json; charset=utf-8');
 
-    print json_encode($response->get());
+    print json_encode($response->get(), JSON_UNESCAPED_UNICODE);
 }
 
 
