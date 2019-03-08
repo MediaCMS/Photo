@@ -48,13 +48,12 @@ if (isset($_SERVER['HTTP_ORIGIN']) && ($_SERVER['HTTP_ORIGIN'] == ORIGIN)) {
 } else {
 
     header('HTTP/1.1 403 Origin Denied');
-    
+
     exit('HTTP/1.1 403 Origin Denied');
 }
 
 $response = new Response();
-//$response->setDebug('$_GET', $_GET);
-//$response->setDebug('$_POST', $_POST);
+
 try {
 
     define('DEBUG', $_GET['debug'] ?? 0);
@@ -62,15 +61,7 @@ try {
     if (count($_GET) == 0)
 
         throw new Exception('Доступ заборонено', 100);
-/*
-    if (!isset($_POST['key']))
 
-        throw new Exception('Відсутній ключ', 101);
-
-    if ($_POST['key'] != KEY)
-
-        throw new Exception('Невідомий ключ', 102);
-*/
     if (!isset($_GET['action']))
 
         throw new Exception('Відсутня дія', 103);
